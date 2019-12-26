@@ -1,0 +1,89 @@
+package com.sonake.seconds.kill.demo.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * @author ：xzyuan
+ * @date ：Created in 2019/12/26 11:36
+ * @description：
+ * @version:
+ */
+@Service
+public class RedisService {
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    /**
+     * 设置String键值对
+     *
+     * @param key
+     * @param value
+     * @param millis
+     */
+    public void put(String key, Object value, long millis) {
+        redisTemplate.opsForValue().set(key, value, millis, TimeUnit.MINUTES);
+    }
+
+    public void putForHash(String objectKey, String hkey, String value) {
+        redisTemplate.opsForHash().put(objectKey, hkey, value);
+    }
+
+    /**
+     * 普通缓存获取
+     *
+     * @param key 键
+     * @return 值
+     */
+    public Object get(String key) {
+        return key == null ? null : redisTemplate.opsForValue().get(key);
+    }
+
+    public <T> T get(String key, Class<T> type) {
+        return (T) redisTemplate.boundValueOps(key).get();
+    }
+
+    public void remove(String key) {
+        redisTemplate.delete(key);
+    }
+
+    public boolean expire(String key, long millis) {
+        return redisTemplate.expire(key, millis, TimeUnit.MILLISECONDS);
+    }
+
+    public boolean persist(String key) {
+        return redisTemplate.hasKey(key);
+    }
+
+    public String getString(String key) {
+        return (String) redisTemplate.opsForValue().get(key);
+    }
+
+    public Integer getInteger(String key) {
+        return (Integer) redisTemplate.opsForValue().get(key);
+    }
+
+    public Long getLong(String key) {
+        return (Long) redisTemplate.opsForValue().get(key);
+    }
+
+    public Date getDate(String key) {
+        return (Date) redisTemplate.opsForValue().get(key);
+    }
+
+    /**
+     * 对指定key的键值减一
+     *
+     * @param key
+     * @return
+     */
+    public Long decrBy(String key) {
+        return redisTemplate.opsForValue().decrement(key);
+    }
+
+}
