@@ -29,7 +29,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         log.info("参加秒杀的用户是：{}，秒杀的商品是：{}", username, goodsName);
         String message = null;
         //查找该商品库存
-        Integer storeCount = this.count(new LambdaQueryWrapper<Goods>().eq(Goods::getGoodsName,goodsName));
+        Integer storeCount = this.getOne(new LambdaQueryWrapper<Goods>().eq(Goods::getGoodsName,goodsName)).getStore();
         log.info("用户：{}参加秒杀，当前商品库存量是：{}", username, storeCount);
         if (storeCount > 0) {
             /**
