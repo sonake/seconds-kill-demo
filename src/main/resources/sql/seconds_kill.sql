@@ -29,7 +29,7 @@ CREATE TABLE `goods` (
 -- ----------------------------
 -- Records of goods
 -- ----------------------------
-INSERT INTO `goods` VALUES ('1', 'watch', '-2');
+INSERT INTO `goods` VALUES ('1', 'watch', '100');
 INSERT INTO `goods` VALUES ('2', 'pencil', '150');
 
 -- ----------------------------
