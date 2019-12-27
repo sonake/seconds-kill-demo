@@ -30,6 +30,7 @@ public class MQStoreService {
         /**
          * 调用数据库service给数据库对应商品库存减一
          */
+        //int s =Integer.valueOf("ssss");
         goodsService.decrByStore(goodsName);
     }
 }

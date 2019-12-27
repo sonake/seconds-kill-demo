@@ -30,6 +30,7 @@ public class MQOrderService {
         /**
          * 调用数据库orderService创建订单信息
          */
+        //int s =Integer.valueOf("ssss");
         orderService.save(orders);
     }
 }

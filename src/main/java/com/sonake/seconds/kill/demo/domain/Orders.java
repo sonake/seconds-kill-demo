@@ -14,8 +14,8 @@ import lombok.Data;
 @TableName("orders")
 @Data
 public class Orders {
-    @TableId(type = IdType.AUTO)
-    private int id;
+    @TableId(type = IdType.ID_WORKER_STR)
+    private String id;
     private String orderName;
     private String orderUser;
 }
