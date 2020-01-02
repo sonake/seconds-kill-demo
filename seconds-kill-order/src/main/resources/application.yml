@@ -1,0 +1,37 @@
+server:
+  port: 8020
+spring:
+  application:
+    name: seconds-kill-order
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:9010
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://47.105.40.52:3306/seconds-kill-order?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
+    username: root
+    password: Jdkc0912..
+  rabbitmq:
+    virtual-host: /
+    host: 47.105.40.52
+    username: guest
+    password: guest
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 10 #最大重试次数
+          max-interval: 10000 #重试最大时间间隔(ms)
+          initial-interval: #c重试间隔时间(ms)
+          multiplier: 5 #应用于前一重试间隔的乘法器。
+
+  redis:
+    host: localhost
+    port: 6379
+    jedis:
+      pool:
+        max-active: 1024
+        max-wait: -1ms
+        max-idle: 200
+    database: 2

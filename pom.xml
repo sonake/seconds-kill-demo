@@ -2,41 +2,34 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <groupId>com.sonake</groupId>
+    <artifactId>seconds-kill-demo</artifactId>
+    <version>1.0.1-SNAPSHOT</version>
+    <name>seconds-kill-demo</name>
+    <description>rabbitmq+redis秒杀demo</description>
+
+    <modules>
+        <module>seconds-kill-order</module>
+        <module>seconds-kill-storage</module>
+    </modules>
+
+    <properties>
+        <!--升级 -->
+        <spring-cloud.version>Hoxton.RELEASE</spring-cloud.version>
+        <!--升级 -->
+        <com-alibaba-cloud.version>2.1.1.RELEASE</com-alibaba-cloud.version>
+    </properties>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.2.0.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.sonake</groupId>
-    <artifactId>seconds-kill-demo</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>seconds-kill-demo</name>
-    <description>rabbitmq+redis秒杀demo</description>
-
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
-
     <dependencies>
+        <!--alibab服务注册与发现-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <version>2.2.0.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-            <version>2.2.0.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-amqp</artifactId>
-            <version>2.2.0.RELEASE</version>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-nacos-discovery</artifactId>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
@@ -44,28 +37,49 @@
             <version>3.2.0</version>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>compile</scope>
-            <version>1.18.2</version>
-        </dependency>
-        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bus-amqp</artifactId>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!--                        <dependency>-->
+            <!--                            <groupId>org.springframework.cloud</groupId>-->
+            <!--                            <artifactId>spring-cloud-alibaba-dependencies</artifactId>-->
+            <!--                            <version>0.9.0.RELEASE</version>-->
+            <!--                            <type>pom</type>-->
+            <!--                            <scope>import</scope>-->
+            <!--                        </dependency>-->
+            <!-- 升级，替换为 com.alibaba.cloud -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${com-alibaba-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
