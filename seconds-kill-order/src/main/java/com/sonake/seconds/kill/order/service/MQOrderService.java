@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 public class MQOrderService {
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private IStorageService storageService;
     /**
      * 监听订单消息队列，并消费
      *
@@ -31,5 +33,19 @@ public class MQOrderService {
          */
         //int s =Integer.valueOf("ssss");
         orderService.save(orders);
+
+
+    }
+
+    @RabbitListener(queues = RabbitMqConfigure.ORDER_QUEUE)
+    public void decrByStore(String goodsName) {
+        log.info("库存消息队列收到的消息商品信息是：{}", goodsName);
+        /**
+         * 调用数据库orderService创建订单信息
+         */
+        //int s =Integer.valueOf("ssss");
+        storageService.decrByStore(goodsName);
+
+
     }
 }
