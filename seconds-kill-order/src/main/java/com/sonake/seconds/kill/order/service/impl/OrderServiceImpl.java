@@ -14,4 +14,5 @@ import org.springframework.stereotype.Service;
  */
 @Service("orderService")
 public class OrderServiceImpl extends ServiceImpl<OrderDao, Orders> implements OrderService {
+
 }

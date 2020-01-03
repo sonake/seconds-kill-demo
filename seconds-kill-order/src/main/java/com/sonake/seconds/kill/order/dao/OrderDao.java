@@ -2,6 +2,7 @@ package com.sonake.seconds.kill.order.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.sonake.seconds.kill.order.entity.Orders;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * @author ：xzyuan
@@ -9,5 +10,6 @@ import com.sonake.seconds.kill.order.entity.Orders;
  * @description：
  * @version:
  */
+@Mapper
 public interface OrderDao extends BaseMapper<Orders> {
 }

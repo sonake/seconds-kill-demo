@@ -10,4 +10,6 @@ import com.sonake.seconds.kill.storage.entity.Goods;
  * @version:
  */
 public interface GoodService extends IService<Goods> {
+
+    void decrByStore(String goodsName);
 }

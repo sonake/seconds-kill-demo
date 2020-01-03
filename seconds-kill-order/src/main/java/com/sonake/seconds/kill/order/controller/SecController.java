@@ -1,5 +1,6 @@
 package com.sonake.seconds.kill.order.controller;
 
+import com.sonake.seconds.kill.order.configure.RabbitMqConfigure;
 import com.sonake.seconds.kill.order.entity.Orders;
 import com.sonake.seconds.kill.order.service.OrderService;
 import com.sonake.seconds.kill.order.service.RedisService;
@@ -50,13 +51,13 @@ public class SecController {
              */
             log.info("用户：{}秒杀该商品：剩余{}库存，可以进行下订单操作", username, decrByResult, goodsName);
             //发消息给库存消息队列，将库存数据减一
-            //rabbitTemplate.convertAndSend(RabbitMQConfig.STORY_EXCHANGE, RabbitMQConfig.STORY_ROUTING_KEY, goodsName);
+            rabbitTemplate.convertAndSend(RabbitMqConfigure.STORY_EXCHANGE, RabbitMqConfigure.STORY_ROUTING_KEY, goodsName);
 
             //发消息给订单消息队列，创建订单
             Orders orders = new Orders();
             orders.setOrderName(goodsName);
             orders.setOrderUser(username);
-            //rabbitTemplate.convertAndSend(RabbitMQConfig.ORDER_EXCHANGE, RabbitMQConfig.ORDER_ROUTING_KEY, orders);
+            rabbitTemplate.convertAndSend(RabbitMqConfigure.ORDER_EXCHANGE, RabbitMqConfigure.ORDER_ROUTING_KEY, orders);
             message = "用户" + username + "秒杀" + goodsName + "成功";
         } else {
             /**

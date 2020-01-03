@@ -27,7 +27,7 @@ spring:
           multiplier: 5 #应用于前一重试间隔的乘法器。
 
   redis:
-    host: localhost
+    host: 47.105.40.52
     port: 6379
     jedis:
       pool:
@@ -35,3 +35,4 @@ spring:
         max-wait: -1ms
         max-idle: 200
     database: 2
+    password: Jdkc0912..
