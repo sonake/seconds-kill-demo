@@ -7,6 +7,9 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author ：xzyuan
  * @date ：Created in 2020/1/3 11:20
@@ -37,7 +40,7 @@ public class MQOrderService {
 
     }
 
-    @RabbitListener(queues = RabbitMqConfigure.ORDER_QUEUE)
+    @RabbitListener(queues = RabbitMqConfigure.STORY_QUEUE)
     public void decrByStore(String goodsName) {
         log.info("库存消息队列收到的消息商品信息是：{}", goodsName);
         /**

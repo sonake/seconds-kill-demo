@@ -4,7 +4,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-//@EnableSecondsConfigure
 public class SecondsKillStorageApplication {
 
     public static void main(String[] args) {
