@@ -2,6 +2,9 @@ package com.sonake.seconds.kill.order.service;
 
 import com.sonake.seconds.kill.order.configure.RabbitMqConfigure;
 import com.sonake.seconds.kill.order.entity.Orders;
+import com.sonake.seconds.kill.order.entity.Trade;
+import io.seata.core.context.RootContext;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,9 @@ public class MQOrderService {
     private OrderService orderService;
     @Autowired
     private IStorageService storageService;
+    @Autowired
+    private TradeService tradeService;
+
     /**
      * 监听订单消息队列，并消费
      *
@@ -34,21 +40,25 @@ public class MQOrderService {
         /**
          * 调用数据库orderService创建订单信息
          */
-        //int s =Integer.valueOf("ssss");
         orderService.save(orders);
 
 
     }
 
     @RabbitListener(queues = RabbitMqConfigure.STORY_QUEUE)
-    public void decrByStore(String goodsName) {
-        log.info("库存消息队列收到的消息商品信息是：{}", goodsName);
+    @GlobalTransactional
+    public void decrByStore(Trade t) {
+        log.info("物流消息队列收到的消息商品信息是：{},{},{}", t.getGoodsname(),t.getUsername(),t.getTrade());
+        log.info("当前 XID: {}", RootContext.getXID());
         /**
-         * 调用数据库orderService创建订单信息
+         * 调用数据库创建物流信息
          */
-        //int s =Integer.valueOf("ssss");
-        storageService.decrByStore(goodsName);
+        tradeService.saves(t);
+        storageService.decrByStore(t.getGoodsname());
+        throw new RuntimeException("抛个异常");
+
 
 
     }
+
 }

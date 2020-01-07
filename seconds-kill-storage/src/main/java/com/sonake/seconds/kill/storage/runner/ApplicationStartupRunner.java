@@ -28,7 +28,7 @@ public class ApplicationStartupRunner implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         List<Goods> list = goodsService.list();
         list.forEach(goods -> {
-            redisService.put(goods.getGoodsName(),goods.getStore(),20);
+            redisService.put(goods.getGoodsName(),goods.getStore(),60);
         });
         log.info("商品库存初始化至redis完毕");
     }

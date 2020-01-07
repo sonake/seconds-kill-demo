@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sonake.seconds.kill.storage.dao.GoodDao;
 import com.sonake.seconds.kill.storage.entity.Goods;
 import com.sonake.seconds.kill.storage.service.GoodService;
+import io.seata.core.context.RootContext;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,8 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class GoodServiceImpl extends ServiceImpl<GoodDao, Goods> implements GoodService {
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional
     public void decrByStore(String goodsName) {
+        log.info("当前 XID: {}", RootContext.getXID());
         //1、库存减一
         LambdaQueryWrapper<Goods> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Goods::getGoodsName, goodsName);

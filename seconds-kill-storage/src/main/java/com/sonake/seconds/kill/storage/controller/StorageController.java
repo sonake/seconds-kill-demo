@@ -25,7 +25,7 @@ public class StorageController {
      */
     @GetMapping("decrByStore")
     public void decrByStore(String goodsName) {
-        log.info("/hello服务被调用");
+        log.info("/库存减少接口调用");
         goodService.decrByStore(goodsName);
     }
 }

@@ -2,15 +2,15 @@ package com.sonake.seconds.kill.order.controller;
 
 import com.sonake.seconds.kill.order.configure.RabbitMqConfigure;
 import com.sonake.seconds.kill.order.entity.Orders;
+import com.sonake.seconds.kill.order.entity.Trade;
 import com.sonake.seconds.kill.order.service.OrderService;
 import com.sonake.seconds.kill.order.service.RedisService;
+import com.sonake.seconds.kill.order.service.TradeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author ：xzyuan
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @description：
  * @version:
  */
-@Controller
+@RestController
 @Slf4j
 public class SecController {
     @Autowired
@@ -28,7 +28,7 @@ public class SecController {
     private RedisService redisService;
 
     @Autowired
-    private OrderService orderService;
+    private TradeService tradeService;
 
 
     /**
@@ -51,7 +51,11 @@ public class SecController {
              */
             log.info("用户：{}秒杀该商品：剩余{}库存，可以进行下订单操作", username, decrByResult, goodsName);
             //发消息给库存消息队列，将库存数据减一
-            rabbitTemplate.convertAndSend(RabbitMqConfigure.STORY_EXCHANGE, RabbitMqConfigure.STORY_ROUTING_KEY, goodsName);
+            Trade t = new Trade();
+            t.setGoodsname(goodsName);
+            t.setUsername(username);
+            t.setTrade("顺丰");
+            rabbitTemplate.convertAndSend(RabbitMqConfigure.STORY_EXCHANGE, RabbitMqConfigure.STORY_ROUTING_KEY, t);
 
             //发消息给订单消息队列，创建订单
             Orders orders = new Orders();
@@ -67,5 +71,20 @@ public class SecController {
             message = username + "商品的库存量没有剩余,秒杀结束";
         }
         return message;
+    }
+
+
+    /**
+     * 数据单线程秒杀实现
+     *
+     * @param trade
+     * @return
+     */
+    @PostMapping("/secByIn")
+    public void secByIn(@RequestBody Trade trade) {
+        log.info("参加秒杀的用户是：{}，秒杀的商品是：{}", trade.getUsername(),trade.getGoodsname());
+
+        trade.setTrade("顺丰");
+        tradeService.secByin(trade);
     }
 }
