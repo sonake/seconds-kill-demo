@@ -9,12 +9,15 @@ import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author ：xzyuan
@@ -70,9 +73,13 @@ public class MQOrderService {
      *
      * @param message
      */
-    //@RabbitListener(queues = RabbitMqConfigure.LIND_DEAD_QUEUE)
-    public void dealSubscribe(Message message, Channel channel) throws IOException {
-        System.out.println("Dead Subscriber:" + new String(message.getBody(), "UTF-8"));
+    @RabbitListener(queues = RabbitMqConfigure.LIND_DEAD_QUEUE)
+    public void dealSubscribe(Message message, @Headers Map<String, Object> headers, Channel channel) throws IOException {
+        //System.out.println("Dead Subscriber:" + new String(message.getBody(), "UTF-8"));
+        // 手动ack
+        Long deliveryTag = (Long) headers.get(AmqpHeaders.DELIVERY_TAG);
+        // 手动签收
+        channel.basicAck(deliveryTag, false);
     }
 
 }
