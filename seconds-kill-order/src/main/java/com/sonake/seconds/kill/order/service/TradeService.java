@@ -12,5 +12,4 @@ import com.sonake.seconds.kill.order.entity.Trade;
  */
 public interface TradeService extends IService<Trade> {
     void saves(Trade t);
-    void secByin(Trade t);
 }

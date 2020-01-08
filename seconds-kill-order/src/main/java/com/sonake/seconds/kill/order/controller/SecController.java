@@ -74,17 +74,4 @@ public class SecController {
     }
 
 
-    /**
-     * 数据单线程秒杀实现
-     *
-     * @param trade
-     * @return
-     */
-    @PostMapping("/secByIn")
-    public void secByIn(@RequestBody Trade trade) {
-        log.info("参加秒杀的用户是：{}，秒杀的商品是：{}", trade.getUsername(),trade.getGoodsname());
-
-        trade.setTrade("顺丰");
-        tradeService.secByin(trade);
-    }
 }

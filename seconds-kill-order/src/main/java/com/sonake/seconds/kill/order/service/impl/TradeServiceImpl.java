@@ -25,10 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service("tradeService")
 @Slf4j
 public class TradeServiceImpl extends ServiceImpl<TradeDao, Trade> implements TradeService {
-    @Autowired
-    private OrderService orderService;
-    @Autowired
-    private IStorageService storageService;
 
     @Override
     @GlobalTransactional
@@ -37,20 +33,6 @@ public class TradeServiceImpl extends ServiceImpl<TradeDao, Trade> implements Tr
         this.save(t);
     }
 
-    @Override
-    @GlobalTransactional
-    public void secByin(Trade t) {
-        //订单入库
-        Orders orders = new Orders();
-        orders.setOrderName(t.getGoodsname());
-        orders.setOrderUser(t.getUsername());
-        orderService.save(orders);
-        //物流入库
-        this.save(t);
-        //调用库存服务
-        storageService.decrByStore(t.getGoodsname());
-        throw new RuntimeException("抛异常");
-    }
 
 
 }

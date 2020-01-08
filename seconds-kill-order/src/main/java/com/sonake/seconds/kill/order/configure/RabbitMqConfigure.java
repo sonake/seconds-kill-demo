@@ -20,17 +20,26 @@ public class RabbitMqConfigure {
     //订单交换机
     public static final String ORDER_EXCHANGE = "ORDER_EXCHANGE";
 
+    //死信交换机
+    public static final String LIND_DL_EXCHANGE = "LIND_DL_EXCHANGE";
+
     //库存队列
     public static final String STORY_QUEUE = "STORY_QUEUE";
 
     //订单队列
     public static final String ORDER_QUEUE = "ORDER_QUEUE";
 
+    //死信队列
+    public static final String LIND_DEAD_QUEUE = "LIND_DEAD_QUEUE";
+
     //库存路由键
     public static final String STORY_ROUTING_KEY = "STORY_ROUTING_KEY";
 
     //订单路由键
     public static final String ORDER_ROUTING_KEY = "ORDER_ROUTING_KEY";
+
+    //死信路由键
+    public static final String LIND_DEAD_ROUTING_KEY = "x-dead-letter-routing-key";
 
     @Bean
     public MessageConverter messageConverter() {
@@ -47,7 +56,15 @@ public class RabbitMqConfigure {
     //创建库存队列
     @Bean
     public Queue getStoryQueue() {
-        return new Queue(STORY_QUEUE);
+
+        return QueueBuilder.durable(STORY_QUEUE)
+                //设置死信交换机
+                .withArgument("x-dead-letter-exchange",LIND_DL_EXCHANGE)
+                //毫秒
+                 .withArgument("x-message-ttl",2000)
+                //设置死信路由键
+                 .withArgument("x-dead-letter-routing-key",LIND_DEAD_ROUTING_KEY).build();
+
     }
 
     //库存交换机和库存队列绑定
@@ -72,5 +89,23 @@ public class RabbitMqConfigure {
     @Bean
     public Binding bindOrder() {
         return BindingBuilder.bind(getOrderQueue()).to(getOrderExchange()).with(ORDER_ROUTING_KEY).noargs();
+    }
+
+    //创建死信交换机
+    @Bean
+    public Exchange getDeadExchange() {
+        return ExchangeBuilder.directExchange(LIND_DL_EXCHANGE).durable(true).build();
+    }
+
+    //创建死信队列
+    @Bean
+    public Queue getDeadQueue() {
+        return new Queue(LIND_DEAD_QUEUE);
+    }
+
+    //死信队列和死信交换机绑定
+    @Bean
+    public Binding bindDead() {
+        return BindingBuilder.bind(getDeadQueue()).to(getDeadExchange()).with(LIND_DEAD_ROUTING_KEY).noargs();
     }
 }
