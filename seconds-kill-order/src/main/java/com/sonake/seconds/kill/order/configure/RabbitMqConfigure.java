@@ -64,6 +64,7 @@ public class RabbitMqConfigure {
                  .withArgument("x-message-ttl",2000)
                 //设置死信路由键
                  .withArgument("x-dead-letter-routing-key",LIND_DEAD_ROUTING_KEY).build();
+        //return new Queue(STORY_QUEUE);
 
     }
 

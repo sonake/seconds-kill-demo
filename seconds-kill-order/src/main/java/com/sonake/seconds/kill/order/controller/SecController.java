@@ -1,5 +1,6 @@
 package com.sonake.seconds.kill.order.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.sonake.seconds.kill.order.configure.RabbitMqConfigure;
 import com.sonake.seconds.kill.order.entity.Orders;
 import com.sonake.seconds.kill.order.entity.Trade;
@@ -7,10 +8,15 @@ import com.sonake.seconds.kill.order.service.OrderService;
 import com.sonake.seconds.kill.order.service.RedisService;
 import com.sonake.seconds.kill.order.service.TradeService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 /**
  * @author ：xzyuan
@@ -54,13 +60,23 @@ public class SecController {
             Trade t = new Trade();
             t.setGoodsname(goodsName);
             t.setUsername(username);
-            t.setTrade("顺丰");
+            t.setTrade("sf");
+            // 设置消息唯一id 保证每次重试消息id唯一，不会重复消费，以及幂等问题
+//            Message tMsg = MessageBuilder.withBody(JSON.toJSONString(t).getBytes())
+//                    .setContentType(MessageProperties.CONTENT_TYPE_JSON)
+//                    .setContentEncoding("utf-8")
+//                    .setMessageId(UUID.randomUUID().toString()).build();
             rabbitTemplate.convertAndSend(RabbitMqConfigure.STORY_EXCHANGE, RabbitMqConfigure.STORY_ROUTING_KEY, t);
 
             //发消息给订单消息队列，创建订单
             Orders orders = new Orders();
             orders.setOrderName(goodsName);
             orders.setOrderUser(username);
+            // 设置消息唯一id 保证每次重试消息id唯一，不会重复消费，以及幂等问题
+//            Message oMsg = MessageBuilder.withBody(JSON.toJSONString(orders).getBytes())
+//                    .setContentType(MessageProperties.CONTENT_TYPE_JSON)
+//                    .setContentEncoding("utf-8")
+//                    .setMessageId(UUID.randomUUID().toString()).build();
             rabbitTemplate.convertAndSend(RabbitMqConfigure.ORDER_EXCHANGE, RabbitMqConfigure.ORDER_ROUTING_KEY, orders);
             message = "用户" + username + "秒杀" + goodsName + "成功";
         } else {
